@@ -1,27 +1,19 @@
-const button = document.createElement('button')
-button.textContent = 'READ OUT LOUD'
-button.style.position = 'fixed'
-button.style.bottom = '10px'
-button.style.right = '10px'
-button.style.fontSize = '30px'
-button.style.border = '3px solid black'
-button.style.zIndex = '1000'
-button.style.backgroundColor = 'white'
-button.style.borderRadius = '10px'
-button.style.pointerEvents = 'auto'
+import createButton from './btn'
+import talk from './ssu'
 
-document.body.appendChild(button)
+const button = createButton()
 
-const title = document.querySelector('.articleHeader__title')
+function onMouseUp(event: MouseEvent) {
+  const selection = window.getSelection()
 
-if (title) {
-  console.log('SSU', title.textContent)
-  const ssu = new SpeechSynthesisUtterance(title.textContent)
-  ssu.lang = 'fr-FR'
-  ssu.pitch = 1
-  ssu.rate = 1
-  button.addEventListener('click', (event) => {
-    speechSynthesis.speak(ssu)
-    event.preventDefault()
-  })
+  if (!selection) return
+  if (selection.isCollapsed) return
+
+  selection.modify('extend', 'forward', 'word')
+
+  const text = selection.toString().trim()
+  console.log('SSU', text)
+  talk(text)
 }
+
+window.addEventListener('mouseup', onMouseUp)

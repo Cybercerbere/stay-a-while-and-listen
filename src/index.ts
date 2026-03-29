@@ -34,3 +34,14 @@ function onMouseUp() {
 
 // TODO : ONLY LEFT TO RIGHT AT THE MOMENT
 window.addEventListener('mouseup', onMouseUp)
+
+window.addEventListener(
+  'keydown',
+  (event: KeyboardEvent) => {
+    if (event.key !== 'Escape') return
+    if (!window.speechSynthesis.speaking) return
+
+    window.speechSynthesis.cancel()
+  },
+  true
+)

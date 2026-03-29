@@ -17,7 +17,7 @@
       "matches": ["<all_urls>"],
       "js": ["dist/main.js"],
       "all_frames": false,
-      "run_at": "document_start",
+      "run_at": "document_end",
       "world": "ISOLATED"
     }
   ]

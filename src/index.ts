@@ -1,6 +1,11 @@
+import './main.css'
 import talk from './ssu'
 
 function onMouseUp() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel()
+  }
+
   const selection = window.getSelection()
 
   if (!selection) return
@@ -30,6 +35,11 @@ function onMouseUp() {
 
   const text = selection.toString().trim()
   talk(text)
+
+  const highlight = new Highlight(...selection.getComposedRanges())
+  CSS.highlights.set('selected-text', highlight)
+
+  selection.empty()
 }
 
 // TODO : ONLY LEFT TO RIGHT AT THE MOMENT

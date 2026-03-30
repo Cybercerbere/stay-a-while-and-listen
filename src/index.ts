@@ -1,16 +1,7 @@
 import './main.css'
 import talk from './ssu'
 
-function onMouseUp() {
-  if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel()
-  }
-
-  const selection = window.getSelection()
-
-  if (!selection) return
-  if (selection.isCollapsed) return
-
+function extendForward(selection: Selection) {
   // Save end
   const endNode = selection.focusNode
   const endOffset = selection.focusOffset
@@ -32,17 +23,54 @@ function onMouseUp() {
 
   // Finally, get all characters from last word
   selection.modify('extend', 'forward', 'word')
+}
 
-  const text = selection.toString().trim()
-  talk(text)
+function extendBackward(selection: Selection) {
+  selection.modify('extend', 'backward', 'word')
 
+  const startNode = selection.focusNode
+  const startOffset = selection.focusOffset
+
+  const endNode = selection.anchorNode
+  const endOffset = selection.anchorOffset
+
+  const range = document.createRange()
+  range.setStart(startNode!, startOffset)
+  range.setEnd(endNode!, endOffset)
+
+  selection.removeAllRanges()
+  selection.addRange(range)
+
+  selection.modify('extend', 'forward', 'word')
+}
+
+function highlightSelection(selection: Selection) {
   const highlight = new Highlight(...selection.getComposedRanges())
   CSS.highlights.set('selected-text', highlight)
+}
 
+function onMouseUp() {
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel()
+  }
+
+  const selection = window.getSelection()
+
+  if (!selection) return
+  if (selection.isCollapsed) return
+  if (selection.direction === 'none') return
+
+  if (selection.direction === 'forward') {
+    extendForward(selection)
+  } else {
+    extendBackward(selection)
+  }
+
+  highlightSelection(selection)
+  talk(selection.toString().trim())
   selection.empty()
 }
 
-// TODO : ONLY LEFT TO RIGHT AT THE MOMENT
 window.addEventListener('mouseup', onMouseUp)
 
 window.addEventListener(

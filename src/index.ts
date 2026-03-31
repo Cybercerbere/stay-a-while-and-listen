@@ -1,5 +1,20 @@
 import './main.css'
-import talk from './ssu'
+import ssu from './ssu'
+
+const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode })
+ssu.addEventListener('end', () => {
+  walker.nextNode()
+  ssu.text = walker.currentNode.textContent!
+  window.speechSynthesis.speak(ssu)
+})
+
+function acceptNode(n: Text) {
+  if (!n.textContent.trim()) {
+    return NodeFilter.FILTER_REJECT
+  }
+  const parent = n.parentElement as HTMLElement
+  return parent.checkVisibility() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
+}
 
 function extendForward(selection: Selection) {
   // Save end
@@ -67,7 +82,11 @@ function onMouseUp() {
   }
 
   highlightSelection(selection)
-  talk(selection.toString().trim())
+  ssu.text = selection.toString().trim()
+  window.speechSynthesis.speak(ssu)
+
+  walker.currentNode = selection.focusNode as Node
+
   selection.empty()
 }
 
@@ -76,10 +95,12 @@ window.addEventListener('mouseup', onMouseUp)
 window.addEventListener(
   'keydown',
   (event: KeyboardEvent) => {
-    if (event.key !== 'Escape') return
-    if (!window.speechSynthesis.speaking) return
-
-    window.speechSynthesis.cancel()
+    if (event.key === 'Escape') {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel()
+      }
+      return
+    }
   },
   true
 )

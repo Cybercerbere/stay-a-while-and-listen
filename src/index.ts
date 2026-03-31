@@ -17,7 +17,7 @@ function acceptNode(n: Text) {
   return parent.checkVisibility() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT
 }
 
-window.addEventListener('mouseup', Strategies.extendSelectionToWords)
+window.addEventListener('mouseup', Strategies.extendSelectionToParentParagraph)
 
 window.addEventListener(
   'keydown',

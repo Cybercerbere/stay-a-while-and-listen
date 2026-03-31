@@ -1,10 +1,10 @@
+import ssu from './ssu'
+
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
 // │ Extend to worlds                                                          │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-
-import ssu from './ssu'
 
 const extendForward = () => {
   const s = window.getSelection()
@@ -106,4 +106,40 @@ const extendSelectionToWords = () => {
   window.speechSynthesis.speak(ssu)
 }
 
-export default { extendSelectionToWords }
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Extend to parent <p>                                                      │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
+
+const extendSelectionToParentParagraph = () => {
+  const acceptNode = (n: Element) => {
+    return n instanceof HTMLParagraphElement ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+  }
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, { acceptNode })
+
+  ssu.addEventListener('end', () => {
+    w.nextNode()
+    const p = w.currentNode as HTMLParagraphElement
+    ssu.text = p.textContent.trim()
+    window.speechSynthesis.speak(ssu)
+  })
+
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel()
+  }
+
+  const s = window.getSelection()
+
+  if (!s) return
+  if (s.rangeCount === 0) return
+  if (!s.focusNode) return
+
+  const p = s.focusNode.parentElement?.closest('p') as HTMLParagraphElement
+
+  ssu.text = p.textContent.trim()
+  window.speechSynthesis.speak(ssu)
+  w.currentNode = p
+}
+
+export default { extendSelectionToWords, extendSelectionToParentParagraph }

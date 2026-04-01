@@ -19,3 +19,8 @@ Basic text to speech extension:
 - [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range)
 - [SpeechSynthesisUtterance](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance)
 - [KeyboardEvent](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent)
+
+## Folders
+
+- **src:** contains Chrome Web Extension codebase
+- **experiments:** contains raw tests on Web APIs. Each test have a headline explaining its goal

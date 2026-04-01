@@ -58,6 +58,8 @@ const extendReadingFromSelectionToParagraph = () => {
   highlight()
   ssu.text = p.textContent.trim()
   window.speechSynthesis.speak(ssu)
+
+  s.empty()
 }
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │

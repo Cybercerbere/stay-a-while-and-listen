@@ -1,17 +1,16 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ SSU: highlight text to be read on selection                               │
+// │ Range: draw rectangles based on client rects                              │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Constants & variables                                                     │
+// │ Variables                                                                 │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-const CLASSNAME_PARAGRAPH = 'ssu-paragraph'
-const CLASSNAME_WORD = 'ssu-word' // Not used: can't finish "on boundary" implementation
-let p
+const refs = []
+
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
 // │ Inject CSS                                                                │
@@ -19,69 +18,76 @@ let p
 // └───────────────────────────────────────────────────────────────────────────┘
 const style = document.createElement('style')
 style.textContent = `
-::highlight(${CLASSNAME_PARAGRAPH}) {
-  background-color: rgba(250, 0, 0, 0.1);
+.r-overlay {
+  height: 100%;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10000;
 }
-::highlight(${CLASSNAME_WORD}) {
-  background-color: rgba(255, 0, 0, 0.5);
+.r-container {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 2px solid black;
+  border-radius: 10px;
+  position: absolute;
+}
+.r-rect {
+  background-color: rgba(0, 0, 255, 0.1);
+  border: 1px solid black;
+  border-radius: 5px;
+  position: absolute;
 }
 `
 document.body.appendChild(style)
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Init SSU                                                                  │
+// │ Attach overlay                                                            │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-const ssu = new SpeechSynthesisUtterance()
-ssu.lang = 'fr-FR'
-ssu.pitch = 0.8
-ssu.rate = 1.3
-ssu.volume = 1
-
-ssu.addEventListener('start', () => {
-  // Highlight paragraph to be read
-  const r = new Range()
-  r.selectNodeContents(p)
-  window.CSS.highlights.set(CLASSNAME_PARAGRAPH, new Highlight(r))
-})
-
-ssu.addEventListener('boundary', (e) => {
-  // ┌─────────────────────────────────────────────────────────────────────────┐
-  // │ Tried something and discovered "boundary" partial support on Chrome 33  │
-  // └─────────────────────────────────────────────────────────────────────────┘
-  // window.CSS.highlights.delete(CLASSNAME_WORD)
-  // if (!p) return
-  // const text = e.utterance.text
-  // const start = e.charIndex
-  // const end = text.indexOf(' ', start)
-  // const r = new Range()
-  // r.setStart(p, start)
-  // r.setEnd(p, end)
-  // window.CSS.highlights.set(CLASSNAME_WORD, new Highlight(r))
-})
-
-ssu.addEventListener('end', () => {
-  window.CSS.highlights.clear()
-})
+const overlay = document.createElement('div')
+overlay.classList.add('r-overlay')
+document.body.appendChild(overlay)
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Read text out loud on selection                                           │
+// │ Draw rectangles on mouse up                                               │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 window.addEventListener('mouseup', () => {
-  // Cancel current reading
-  if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel()
+  for (const ref of refs) {
+    ref.remove()
   }
-
-  // Get closest <p>
   const s = window.getSelection()
-  p = s.anchorNode.parentElement.closest('p')
-  if (!p) return
 
-  // Read text
-  ssu.text = p.textContent
-  window.speechSynthesis.speak(ssu)
+  const r = new Range()
+  r.setStart(s.anchorNode, s.anchorOffset)
+  r.setEnd(s.focusNode, s.focusOffset)
+
+  const container = r.getBoundingClientRect()
+  const { top, left, width, height } = container
+  const div = document.createElement('div')
+  div.classList.add('r-container')
+  div.style.top = `${top}px`
+  div.style.left = `${left}px`
+  div.style.width = `${width}px`
+  div.style.height = `${height}px`
+  overlay.appendChild(div)
+  refs.push(div)
+
+  const rects = r.getClientRects()
+
+  for (const rect of rects) {
+    const { top, left, width, height } = rect
+    const div = document.createElement('div')
+    div.classList.add('r-rect')
+    div.style.top = `${top}px`
+    div.style.left = `${left}px`
+    div.style.width = `${width}px`
+    div.style.height = `${height}px`
+    overlay.appendChild(div)
+    refs.push(div)
+  }
 
   s.empty()
 })

@@ -1,9 +1,6 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ SSU: testing API                                                          │
-// │                                                                           │
-// │ How to use:                                                               │
-// │ - Copy/paste code in console                                              │
+// │ SSU: get familiar with API                                                │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 const ssu = new SpeechSynthesisUtterance()

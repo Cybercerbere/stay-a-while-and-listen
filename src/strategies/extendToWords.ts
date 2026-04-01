@@ -1,44 +1,118 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Strategy: extend to parent <p>                                            │
+// │ Strategy: extend to previous and next words                               │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 import ssu from '../ssu'
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ TreeWalker (for continuous reading)                                       │
+// │ Setup                                                                     │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-const acceptNode = (n: Element) => {
-  return n instanceof HTMLParagraphElement ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+const acceptNode = (n: Text) => {
+  if (!n.textContent.trim()) {
+    return NodeFilter.FILTER_SKIP
+  }
+  const parent = n.parentElement as HTMLElement
+  return parent.checkVisibility() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
 }
-const w = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, { acceptNode })
+const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode })
 
-const readNextParagraph = () => {
+const readNextText = () => {
   w.nextNode()
-  highlight()
-  const p = w.currentNode as HTMLParagraphElement
-  ssu.text = p.textContent.trim()
+
+  if (!w.currentNode.textContent) return
+
+  const text = w.currentNode.textContent.trim()
+  ssu.text = text
   window.speechSynthesis.speak(ssu)
 }
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Highlight                                                                 │
+// │ Extend to words                                                           │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-const highlight = () => {
-  window.CSS.highlights.clear()
-  const r = new Range()
-  r.selectNodeContents(w.currentNode)
-  const hl = new Highlight(r)
-  CSS.highlights.set('selected-text', hl)
+const extendForward = () => {
+  const s = window.getSelection()
+
+  // Early returns
+  if (!s) return
+  if (s.rangeCount === 0) return
+  if (!s.anchorNode) return
+  if (!s.focusNode) return
+
+  // Save end
+  const end = {
+    node: s.focusNode,
+    offset: s.focusOffset,
+  }
+
+  // Extend 1st word
+  s.collapseToStart()
+  s.modify('extend', 'backward', 'word')
+
+  const start = {
+    node: s.focusNode,
+    offset: s.focusOffset,
+  }
+
+  const range = new Range()
+  range.setStart(start.node, start.offset)
+  range.setEnd(end.node, end.offset)
+
+  s.removeAllRanges()
+  s.addRange(range)
+
+  s.modify('extend', 'forward', 'word')
 }
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Read selection                                                            │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-const extendReadingFromSelectionToParagraph = () => {
+
+const extendBackward = () => {
+  const s = window.getSelection()
+
+  if (!s) return
+  if (s.rangeCount === 0) return
+  if (!s.anchorNode) return
+  if (!s.focusNode) return
+
+  s.modify('extend', 'backward', 'word')
+
+  const start = {
+    node: s.focusNode,
+    offset: s.focusOffset,
+  }
+  const end = {
+    node: s.anchorNode,
+    offset: s.anchorOffset,
+  }
+
+  const range = new Range()
+  range.setStart(start.node, start.offset)
+  range.setEnd(end.node, end.offset)
+
+  s.removeAllRanges()
+  s.addRange(range)
+
+  s.modify('extend', 'forward', 'word')
+}
+
+const highlightSelection = (): string => {
+  const s = window.getSelection()
+
+  if (!s) return ''
+  if (s.rangeCount === 0) return ''
+  if (!s.focusNode) return ''
+
+  const text = s.toString().trim()
+
+  const highlight = new Highlight(s.getRangeAt(0))
+  CSS.highlights.set('selected-text', highlight)
+
+  w.currentNode = s.focusNode
+  s.empty()
+  return text
+}
+
+const extendReadingFromSelectionToWords = () => {
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel()
   }
@@ -47,16 +121,16 @@ const extendReadingFromSelectionToParagraph = () => {
 
   if (!s) return
   if (s.rangeCount === 0) return
-  if (!s.focusNode) return
-  if (!s.focusNode.parentElement) return
+  if (s.direction === 'none') return
 
-  const p = s.focusNode.parentElement.closest('p') as HTMLParagraphElement
+  if (s.direction === 'forward') {
+    extendForward()
+  } else {
+    extendBackward()
+  }
 
-  if (!p) return
-
-  w.currentNode = p
-  highlight()
-  ssu.text = p.textContent.trim()
+  const text = highlightSelection()
+  ssu.text = text
   window.speechSynthesis.speak(ssu)
 }
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -65,8 +139,8 @@ const extendReadingFromSelectionToParagraph = () => {
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 const setup = () => {
-  window.addEventListener('mouseup', extendReadingFromSelectionToParagraph)
-  ssu.addEventListener('end', readNextParagraph)
+  window.addEventListener('mouseup', extendReadingFromSelectionToWords)
+  ssu.addEventListener('end', readNextText)
 }
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │

@@ -23,4 +23,4 @@ Basic text to speech extension:
 ## Folders
 
 - **src:** contains Chrome Web Extension codebase
-- **experiments:** contains raw tests on Web APIs. Each test have a headline explaining its goal
+- **experiments:** contains raw tests on Web APIs to be copied/pastes in console (avoid complex build)

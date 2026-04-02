@@ -10,6 +10,7 @@
     "zip": "npm run build &&zip -r stay-a-while-and-listen.zip manifest.json dist/ icons/"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1"
   }

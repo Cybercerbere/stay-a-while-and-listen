@@ -2,6 +2,14 @@
 // │                                                                           │
 // │ Strategy: read word after word because of lack of "boundary" event        │
 // │                                                                           │
+// │ 3rd implementation: I saw the word-by-word highlight on Speechify's       │
+// │ extension. I expected to do an easy version with "boundary" event         │
+// │ But after some tests, I found out the "boundary" event as only partial    │
+// │ support since Chrome 33.                                                  │
+// │                                                                           │
+// │ I needed a way to get each word separately and highlight them without     │
+// │ breaking the DOM.                                                         │
+// │ Result is a bit ugly (too much silence between word) but it works.        │
 // └───────────────────────────────────────────────────────────────────────────┘
 
 // ┌───────────────────────────────────────────────────────────────────────────┐

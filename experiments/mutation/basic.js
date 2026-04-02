@@ -1,7 +1,9 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Mutation Observer: get familiar with the concept                          │
+// │ Mutation Observer                                                         │
 // │                                                                           │
+// │ Did not have a professional use case to test it. Reviewing the syntax     │
+// │ Might be useful on websites with infinite scroll                          │
 // └───────────────────────────────────────────────────────────────────────────┘
 const onMutation = (mutations) => {
   for (const mutation of mutations) {

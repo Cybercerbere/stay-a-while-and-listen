@@ -2,11 +2,16 @@
 // │                                                                           │
 // │ Strategy: extend to previous and next words                               │
 // │                                                                           │
+// │ 1st implementation, knowing nothing about text-to-speech technologies     │
+// │ nor users needs or existing products                                      │
+// │                                                                           │
+// │ Found out that clicking precisely may be difficult (end of day,           │
+// │ lack of coffee, ...). What if a script could give me a little  help?      │
 // └───────────────────────────────────────────────────────────────────────────┘
 import ssu from '../ssu'
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Setup                                                                     │
+// │ Tree Walker                                                               │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 const acceptNode = (n: Text) => {

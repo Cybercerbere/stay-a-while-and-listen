@@ -1,7 +1,8 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ SSU: get familiar with API                                                │
+// │ SSU                                                                       │
 // │                                                                           │
+// │ Getting familiar with API                                                 │
 // └───────────────────────────────────────────────────────────────────────────┘
 const ssu = new SpeechSynthesisUtterance()
 ssu.lang = 'fr-FR'

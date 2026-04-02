@@ -1,7 +1,8 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Range: highligh common ancestor in red                                    │
+// │ Range & commonAncestorContainer                                           │
 // │                                                                           │
+// │ Needed to check which type of Node (HTMLElement, Text?) was returned      │
 // └───────────────────────────────────────────────────────────────────────────┘
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -34,7 +35,6 @@ window.addEventListener('mouseup', () => {
   let ancestor = r.commonAncestorContainer
 
   if (ancestor.nodeType === Node.TEXT_NODE) {
-    const parent = ancestor.parentElement
     ancestor.parentElement.classList.add('r-red')
   } else if (ancestor.nodeType === Node.ELEMENT_NODE) {
     ancestor.classList.add('r-bold')

@@ -1,7 +1,14 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Intersection Observer: get familiar with the concept                      │
+// │ Intersection Observer                                                     │
 // │                                                                           │
+// │ At Dailymotion, working on the video player, I worked on a visibility     │
+// │ feature to "video.play()" when the player is visible "enough"             │
+// │ It was done years ago, I wanted to refresh my knowledge with this snippet │
+// │                                                                           │
+// │ Known issues:                                                             │
+// │ - Target <p> to have blocs of text to read                                │
+// │ - In real website, we can't rely on tag semantic                          │
 // └───────────────────────────────────────────────────────────────────────────┘
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -20,7 +27,6 @@ style.textContent = `
 ::highlight(${CLASSNAME}) {
   background-color: rgb(50, 100, 150);
   color: white;
-  font-weight: bold;
 }
 `
 document.body.appendChild(style)
@@ -38,11 +44,9 @@ ssu.rate = 1.1
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 const onIntersection = (entries, observer) => {
-  for (const entry of entries) {
-    if (!entry.isIntersecting) return
-    if (entry.intersectionRatio < 0.9) return
-
-    window.CSS.highlights.clear()
+  const validEntries = entries.filter((e) => e.isIntersecting && e.intersectionRatio >= 0.9)
+  for (const entry of validEntries) {
+    window.CSS.highlights.delete(CLASSNAME)
     if (window.speechSynthesis.speaking) {
       window.speechSynthesis.cancel()
     }

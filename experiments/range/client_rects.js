@@ -1,7 +1,12 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Range: draw rectangles based on client rects                              │
+// │ Range & clientRects                                                       │
 // │                                                                           │
+// │ Trying to draw highlights based on getClientRects & getBoundingClientRect │
+// │                                                                           │
+// │ Known issues:                                                             │
+// │ - Drawings are fixed                                                      │
+// │ - On scroll, they don't follow their initial position                     │
 // └───────────────────────────────────────────────────────────────────────────┘
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -64,6 +69,7 @@ window.addEventListener('mouseup', () => {
   r.setStart(s.anchorNode, s.anchorOffset)
   r.setEnd(s.focusNode, s.focusOffset)
 
+  // Draw container
   const container = r.getBoundingClientRect()
   const { top, left, width, height } = container
   const div = document.createElement('div')
@@ -75,8 +81,8 @@ window.addEventListener('mouseup', () => {
   overlay.appendChild(div)
   refs.push(div)
 
+  // Draw ranges
   const rects = r.getClientRects()
-
   for (const rect of rects) {
     const { top, left, width, height } = rect
     const div = document.createElement('div')

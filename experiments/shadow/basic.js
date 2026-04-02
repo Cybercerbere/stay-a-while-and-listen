@@ -1,7 +1,8 @@
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
-// │ Shadow DOM: get familiar with the concept                                 │
+// │ Shadow DOM                                                                │
 // │                                                                           │
+// │ Might be necessary to avoid conflicts with parent's CSS                   │
 // └───────────────────────────────────────────────────────────────────────────┘
 const root = document.createElement('div')
 root.style.position = 'fixed'

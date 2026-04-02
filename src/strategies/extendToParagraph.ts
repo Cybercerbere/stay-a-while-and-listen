@@ -2,6 +2,12 @@
 // │                                                                           │
 // │ Strategy: extend to parent <p>                                            │
 // │                                                                           │
+// │ 2nd implementation, one step closer to lazyness.                          │
+// │ While building version 1, I found out some big blocs of text I want to    │
+// │ know about, but too lazy to read.                                         │
+// │                                                                           │
+// │ So, a lazy click in the middle of a paragraph (expecting naively a <p>    │
+// │ behind the scene) should start the text-to-speech                         │
 // └───────────────────────────────────────────────────────────────────────────┘
 import ssu from '../ssu'
 // ┌───────────────────────────────────────────────────────────────────────────┐

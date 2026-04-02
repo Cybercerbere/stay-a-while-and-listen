@@ -1,5 +1,5 @@
 import './main.css'
-import setup from './strategies/extendToParagraph'
+import setup from './strategies/extendToParagraphAndReadWordByWord'
 
 window.addEventListener(
   'keydown',

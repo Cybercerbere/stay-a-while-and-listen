@@ -87,8 +87,12 @@ const buildWords = (p: HTMLParagraphElement) => {
     }
   }
 }
-
-const getClosestP = () => {
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Read selection                                                            │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
+export const extendToParagraphAndReadWordByWord = () => {
   // Reset
   window.CSS.highlights.clear()
   if (window.speechSynthesis.speaking) {
@@ -122,17 +126,3 @@ const getClosestP = () => {
   // Clear selection to show highlights
   s.empty()
 }
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Setup                                                                     │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-const setup = () => {
-  window.addEventListener('mouseup', getClosestP)
-}
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Export                                                                    │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-export default setup

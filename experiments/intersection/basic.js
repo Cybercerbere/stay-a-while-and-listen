@@ -61,6 +61,10 @@ const onIntersection = (entries, observer) => {
     return
   }
 }
-
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Init IntersectionObserver                                                 │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
 const o = new IntersectionObserver(onIntersection, { threshold: 0.9 })
 const paragraphs = document.querySelectorAll('p').forEach((p) => o.observe(p))

@@ -23,7 +23,7 @@ const acceptNode = (n: Text) => {
 }
 const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode })
 
-const readNextText = () => {
+export const readNextText = () => {
   w.nextNode()
 
   if (!w.currentNode.textContent) return
@@ -116,8 +116,12 @@ const highlightSelection = (): string => {
   s.empty()
   return text
 }
-
-const extendReadingFromSelectionToWords = () => {
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │                                                                           │
+// │ Read selection                                                            │
+// │                                                                           │
+// └───────────────────────────────────────────────────────────────────────────┘
+export const extendReadingFromSelectionToWords = () => {
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel()
   }
@@ -138,18 +142,3 @@ const extendReadingFromSelectionToWords = () => {
   ssu.text = text
   window.speechSynthesis.speak(ssu)
 }
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Setup                                                                     │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-const setup = () => {
-  window.addEventListener('mouseup', extendReadingFromSelectionToWords)
-  ssu.addEventListener('end', readNextText)
-}
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Export                                                                    │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-export default setup

@@ -20,7 +20,7 @@ const acceptNode = (n: Element) => {
 }
 const w = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, { acceptNode })
 
-const readNextParagraph = () => {
+export const readNextParagraph = () => {
   w.nextNode()
   highlight()
   const p = w.currentNode as HTMLParagraphElement
@@ -44,7 +44,7 @@ const highlight = () => {
 // │ Read selection                                                            │
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
-const extendReadingFromSelectionToParagraph = () => {
+export const extendReadingFromSelectionToParagraph = () => {
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel()
   }
@@ -67,18 +67,3 @@ const extendReadingFromSelectionToParagraph = () => {
 
   s.empty()
 }
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Setup                                                                     │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-const setup = () => {
-  window.addEventListener('mouseup', extendReadingFromSelectionToParagraph)
-  ssu.addEventListener('end', readNextParagraph)
-}
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │                                                                           │
-// │ Export                                                                    │
-// │                                                                           │
-// └───────────────────────────────────────────────────────────────────────────┘
-export default setup

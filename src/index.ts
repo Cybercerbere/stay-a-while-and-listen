@@ -33,7 +33,6 @@ const addListeners = () => {
   window.addEventListener('keydown', clearOnEscape, true)
   document.addEventListener('visibilitychange', clearOnHidden)
   window.addEventListener('mouseup', extendReadingFromSelectionToParagraph)
-  ssu.addEventListener('end', readNextParagraph)
 }
 
 const removeListeners = () => {
@@ -41,7 +40,6 @@ const removeListeners = () => {
   window.removeEventListener('keydown', clearOnEscape, true)
   document.removeEventListener('visibilitychange', clearOnHidden)
   window.removeEventListener('mouseup', extendReadingFromSelectionToParagraph)
-  ssu.removeEventListener('end', readNextParagraph)
 }
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │

@@ -4,8 +4,7 @@
 // │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 import './main.css'
-import ssu from './ssu'
-import { extendReadingFromSelectionToParagraph, readNextParagraph } from './strategies/extendToParagraph'
+import { extendReadingFromSelectionToParagraph } from './strategies/extendToParagraph'
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │                                                                           │
 // │ Utilities                                                                 │
